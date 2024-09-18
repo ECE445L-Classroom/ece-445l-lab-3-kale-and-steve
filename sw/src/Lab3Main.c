@@ -37,18 +37,32 @@
 #include "../inc/PLL.h"
 #include "../inc/tm4c123gh6pm.h"
 #include "../inc/Timer0A.h"
+#include "../inc/LED.c"
 #include "Lab3.h"
 // ---------- Prototypes   -------------------------
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 void WaitForInterrupt(void);  // low power mode
+void Switch_Init(void);
+void LCD_Init(void);
+void LED_Init(void);
+void Sound_Init(void);
+uint32_t seconds = 0;
+uint32_t minutes = 0;
+uint32_t hours = 0;
 int main(void){
   DisableInterrupts();
   PLL_Init(Bus80MHz);    // bus clock at 80 MHz
-  // write this
+  Switch_Init();
+	LCD_Init();
+	LED_Init();
+	Sound_Init();
   EnableInterrupts();
+	ST7735_InitB();
   while(1){
+		Timer0A_Init(LED_Blink(),80000000, 1);\
+		
+		
       // write this
   }
 }
-
