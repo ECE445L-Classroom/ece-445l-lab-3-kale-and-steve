@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
-#include "../inc/Lab3Main.c"
+#include "../src/Lab3Main.c"
 void LED_Blink(void);
 
 void LED_Init(void){
@@ -13,22 +13,14 @@ void LED_Init(void){
 
 void LED_Blink(void){
 	GPIO_PORTE_DATA_R ^= 0x04;
-	seconds++;
-	if(seconds = 60){
-		minutes++;
-		seconds = 0;
-		if(minutes == 60){
-			minutes = 0;
-			hours++;
-		}
-	}
 }
 
 int main(void){
 	LED_Init();
 	LED_Blink();
+	Delay1ms(1000);
 	LED_Blink();
-	LED_Blink();
+	Delay1ms(1000);
 	return 0;
 	
 }

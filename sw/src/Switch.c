@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
+#include "../src/Lab3Main.c"
+
+int data;
+int switchHold;
 
 void Switch_Init(void){
 	SYSCTL_RCGCGPIO_R |= 0x04; //Activate Clock for Port C
@@ -15,9 +19,57 @@ void Switch_Init(void){
 	}
 
 void GPIOPortC_Handler(void){
+	switchHold = 0;
 	GPIO_PORTC_ICR_R = 0x1E; //clears interrupt bits for PC1-4
-	hours++;
-	minutes++;
+	data = GPIO_PORTC_DATA_R & 0x1E;
+	if (alarmSound == true){
+		alarmSound = false;
+		return;
+	}
+	if (menu && (data & 0x08 != 0)){ // if menu enabled and PC3 pressed, exit menu
+		menu = !menu;
+		return;
+	}
+	else if (data & 0x08 != 0){ // PC3 hold enables the timer menu page
+		while (data & 0x08 != 0){count++; data = GPIO_PORTC_DATA_R & 0x1E;}
+		if (count > 1000){
+			menu = !menu;
+			return;
+		}
+	}
+	if (menu){ // if timer menu enabled:
+		if (data & 0x02 != 0){ //PC1 for alarm time up 
+			alarmMinutes++;
+			if (alarmMinutes == 60){
+				alarmMinutes == 0;
+				alarmHours++;
+				if (alarmHours > 12){
+					alarmHours = 1;
+					alarmAM = !alarmAM;
+				}
+			}
+		}
+		if (data & 0x04 != 0){ //PC2 for alarm time down 
+			alarmMinutes--;
+			if (alarmMinutes == -1){
+				alarmMinutes == 59;
+				alarmHours--;
+				if (alarmHours < 1){
+					alarmHours = 12;
+					alarmAM = !alarmAM;
+				}
+			}
+		}
+	}
+	if (!menu){
+		if (data & 0x02 != 0){ //PC1 for time up 
+			minutes++;
+		}
+		if (data & 0x04 != 0){ //PC2 for time down 
+			minutes--;
+		}
+	}
+		
 }
 
 

@@ -37,8 +37,11 @@
 #include "../inc/PLL.h"
 #include "../inc/tm4c123gh6pm.h"
 #include "../inc/Timer0A.h"
-#include "../inc/LED.c"
+#include "../src/LED.c"
+#include "../src/LCD.c"
+#include "../src/Switch.c"
 #include "Lab3.h"
+#include <stdbool.h>
 // ---------- Prototypes   -------------------------
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -47,9 +50,19 @@ void Switch_Init(void);
 void LCD_Init(void);
 void LED_Init(void);
 void Sound_Init(void);
+void Clock(void);
 uint32_t seconds = 0;
 uint32_t minutes = 0;
 uint32_t hours = 0;
+uint32_t time;
+uint32_t alarmMinute = 0;
+uint32_t alarmHour = 0;
+bool alarmAM = true;
+
+bool am = true;
+bool menu = false;
+bool alarmSound = false;
+
 int main(void){
   DisableInterrupts();
   PLL_Init(Bus80MHz);    // bus clock at 80 MHz
@@ -57,12 +70,39 @@ int main(void){
 	LCD_Init();
 	LED_Init();
 	Sound_Init();
-  EnableInterrupts();
-	ST7735_InitB();
+	Output_Init(); //initialize ST7735
+	Timer0A_Init(Clock, 80000000, 1);
+	EnableInterrupts();
+	time = 1200;
   while(1){
-		Timer0A_Init(LED_Blink(),80000000, 1);\
-		
-		
-      // write this
-  }
+		if (menu == false){
+			PrintTime();
+		}
+		else{PrintAlarmTime();}
+		}
+		if (alarmMinute == minutes && alarmHour == hours){
+		for(int i = 0; i <10000000; i++){
+			Sound_Out();
+			alarmSound = true;
+		}
+	}
 }
+
+void Clock(void){
+	seconds++;
+	if(seconds == 60){
+		minutes++;
+		seconds = 0;
+		if(minutes >= 60){
+			minutes = 0;
+			hours++;
+			if (hours > 12){
+				hours = 1;
+				am = !am;
+			}
+		}
+	}
+	time = 100 * hours + minutes;
+	LED_Blink();
+}
+	

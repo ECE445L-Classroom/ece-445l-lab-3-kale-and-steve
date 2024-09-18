@@ -20,6 +20,7 @@
 // Runs on LM4F120/TM4C123
 // Low level drivers for the ST7735 160x128 LCD based off of
 // the file described above.
+
 //    16-bit color, 128 wide by 160 high LCD
 // Daniel Valvano
 // May 28, 2023
