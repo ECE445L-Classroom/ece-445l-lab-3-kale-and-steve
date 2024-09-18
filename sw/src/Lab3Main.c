@@ -37,9 +37,9 @@
 #include "../inc/PLL.h"
 #include "../inc/tm4c123gh6pm.h"
 #include "../inc/Timer0A.h"
-#include "../src/LED.c"
-#include "../src/LCD.c"
-#include "../src/Switch.c"
+#include "../src/LED.h"
+#include "../src/LCD.h"
+#include "../src/Switch.h"
 #include "Lab3.h"
 #include <stdbool.h>
 // ---------- Prototypes   -------------------------
