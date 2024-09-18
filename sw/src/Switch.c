@@ -18,7 +18,10 @@ void Switch_Init(void){
 	GPIO_PORTC_IS_R &= ~0x1E; // Configure PC1–PC4 for edge-sensitive interrupts GPIO_PORTC_IBE_R &= ~0x1E; // Configure PC1–PC4 for single-edge interrupts GPIO_PORTC_IEV_R |= 0x1E; // Set PC1–PC4 to trigger on rising edge GPIO_PORTC_ICR_R = 0x1E; // Clear any pending interrupts on PC1–PC4 NVIC_EN0_R = 0x04;
 	}
 
-void GPIOPortC_Handler(void){
+void GPIOPortC_Handler(void
+	DisableInterrupts();
+	Delay1ms(3);
+	EnableInterrupts;
 	switchHold = 0;
 	GPIO_PORTC_ICR_R = 0x1E; //clears interrupt bits for PC1-4
 	data = GPIO_PORTC_DATA_R & 0x1E;
